@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+{% load staticfiles %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <div>
+        <h3>This tutorial has been put together by Samuel Agbede</h3>
+    </div>
+    <div>
+        <p>Static Image - Billy Graham</p>
+       <img src="{% static 'images/billy.png' %}" alt = "Image of Billy Graham"/>
+    </div>
+
+    <div>
+        <p>Dynamic Image - Garfield</p>
+       <img src="{{MEDIA_URL}}garfield.jpg" alt = "Image of Garfield"/>
+    </div>
+
+
+
+</body>
+</html>
