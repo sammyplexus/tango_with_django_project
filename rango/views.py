@@ -12,6 +12,8 @@ from rango.forms import CategoryForm
 from rango.forms import PageForm
 from rango.forms import UserForm, UserProfileForm
 
+from datetime import datetime
+
 
 @login_required
 def user_logout(request):
@@ -40,7 +42,8 @@ def user_login(request):
                 return HttpResponse("Your Rango account is disabled.")
         else:
             print("Invalid login details : {0}, {1}".format(username, password))
-            return HttpResponse("Invalid login details supplied.")
+            return render(request, 'rango/login.html',
+                          {'username_error': 'Invalid username', 'password_error': 'Invalid password'})
     else:
         return render(request, 'rango/login.html', {})
 
@@ -126,11 +129,36 @@ def index(request):
 
     context_dictionary = {'categories': category_list, 'pages': page_list}
 
-    return render(request, 'rango/index.html', context=context_dictionary)
+    visitor_cookie_handler(request)
+    context_dictionary['visits'] = request.session['visits']
+    response = render(request, 'rango/index.html', context=context_dictionary)
+    return response
 
 
 def about(request):
-    return render(request, 'rango/about.html', {})
+    visitor_cookie_handler(request)
+    context_dictionary = {'visits': request.session['visits']}
+    return render(request, 'rango/about.html', context_dictionary)
+
+
+def get_server_side_cookie(request, cookie, default_val=None):
+    val = request.session.get(cookie)
+    if not val:
+        val = default_val
+    return val
+
+
+def visitor_cookie_handler(request):
+    visits = int(get_server_side_cookie(request, 'visits', '1'))
+    last_visit_cookie = get_server_side_cookie(request, 'last_visit', str(datetime.now()))
+    last_visit_time = datetime.strptime(last_visit_cookie[:-7], '%Y-%m-%d %H:%M:%S')
+
+    if (datetime.now() - last_visit_time).days > 0:
+        visits = visits + 1
+        request.session['last_visit'] = str(datetime.now())
+    else:
+        request.session['last_visit'] = last_visit_cookie
+    request.session['visits'] = visits
 
 
 def show_category(request, category_name_slug):
