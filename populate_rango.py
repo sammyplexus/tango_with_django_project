@@ -7,7 +7,7 @@ import django
 
 # Crucial step to initialize Django infrastructure.
 django.setup()
-from rango.models import Category, Page
+from rango.models import Category, Page, User
 
 
 def populate():
@@ -39,6 +39,8 @@ def populate():
         # Created is a boolean value. True is returned if get_or_create() had to
         # create a model instance
         p = Page.objects.get_or_create(category=cat, title=title)[0]
+
+
         p.url = url
         p.views = views
         p.save()
@@ -46,7 +48,9 @@ def populate():
 
     def add_cat(name, views, likes):
         # Creating a model instance
-        c = Category.objects.get_or_create(name=name)[0]#
+        c = Category.objects.get_or_create(name=name)[0]
+
+
         c.views = views
         c.likes = likes
         c.save()
