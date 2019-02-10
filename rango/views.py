@@ -138,9 +138,7 @@ def index(request):
 def about(request):
     visitor_cookie_handler(request)
     context_dictionary = {'visits': request.session['visits']}
-    return HttpResponse("Rango says here is the about page")
-
-    # return render(request, 'rango/about.html', context_dictionary)
+    return render(request, 'rango/about.html', context_dictionary)
 
 
 def get_server_side_cookie(request, cookie, default_val=None):
